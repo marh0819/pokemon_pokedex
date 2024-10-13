@@ -3,10 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pokemon_pokedex/config/router/app_router.dart';
 import 'package:pokemon_pokedex/config/router/theme/theme.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // Carga las variables de entorno
-  await dotenv.load(fileName: ".env");
+  const String apiUrl = "http://192.168.18.26:8080"; // Cambia esta URL a la que necesites
   runApp(const MyApp());
 }
 
