@@ -62,7 +62,7 @@ class _UserEditState extends State<UserEdit> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Usuario actualizado con éxito')),
         );
-        context.go('/'); // Regresar a la lista de usuarios
+        context.go('/usuarios'); // Regresar a la lista de usuarios
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al actualizar el usuario: $e')),

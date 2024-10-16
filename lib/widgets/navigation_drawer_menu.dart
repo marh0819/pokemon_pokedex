@@ -29,7 +29,7 @@ class NavigationDrawerMenu extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             onTap: () {
-              context.go('/');
+              context.go('/usuarios');
               Navigator.of(context).pop();
             },
           ),

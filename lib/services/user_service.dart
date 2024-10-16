@@ -1,10 +1,33 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:pokemon_pokedex/models/user.dart'; // Asegúrate de importar correctamente el archivo user.dart
+import 'package:pokemon_pokedex/models/user.dart';
+import 'package:pokemon_pokedex/views/login/LoginDTO.dart'; // Asegúrate de importar correctamente el archivo user.dart
 
 class UserService {
   final String apiUrl = "http://192.168.18.26:8080";
+
+  // Método para realizar el login
+  Future<String?> login(String email, String password) async {
+    final loginDTO = LoginDTO(email: email, password: password);
+
+    final response = await http.post(
+      Uri.parse('$apiUrl/auth/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(loginDTO.toJson()),
+    );
+
+    if (response.statusCode == 202) {
+      // La respuesta incluye el JWT
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      return responseBody['jwt']; // Devuelve el token JWT si es exitoso
+    } else if (response.statusCode == 401) {
+      // Si las credenciales son incorrectas
+      return null;
+    } else {
+      throw Exception('Error en el login: ${response.statusCode}');
+    }
+  }
 
   // Obtener la lista de usuarios
   Future<List<User>> getUsers() async {
@@ -21,7 +44,7 @@ class UserService {
   Future<void> createUser(
       String firstName, String lastName, String email, String password) async {
     final response = await http.post(
-      Uri.parse('$apiUrl/user/save'),
+      Uri.parse('$apiUrl/auth/register'),
       body: jsonEncode({
         'firstName': firstName,
         'lastName': lastName,

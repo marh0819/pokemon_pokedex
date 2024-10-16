@@ -39,7 +39,7 @@ class UserDelete extends StatelessWidget {
                   );
 
                   // Regresamos a la lista de usuarios.
-                  context.go('/');
+                  context.go('/usuarios');
                 } catch (e) {
                   // En caso de error al eliminar, mostramos un mensaje.
                   ScaffoldMessenger.of(context).showSnackBar(

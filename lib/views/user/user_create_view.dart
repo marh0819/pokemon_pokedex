@@ -54,7 +54,7 @@ class _UserCreateState extends State<UserCreate> {
       await Future.delayed(const Duration(seconds: 1));
 
       // Regresar a la lista de usuarios
-      context.go('/');
+      context.go('/usuarios');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al crear el usuario: $e')),
