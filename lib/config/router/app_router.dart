@@ -43,7 +43,8 @@ final router = GoRouter(
     // Nueva ruta para listar Pokémon
     GoRoute(
       path: '/pokemon',
-      builder: (context, state) => const PokemonList(), // Vista para listar Pokémon
+      builder: (context, state) =>
+          const PokemonList(), // Vista para listar Pokémon
     ),
   ],
 );
