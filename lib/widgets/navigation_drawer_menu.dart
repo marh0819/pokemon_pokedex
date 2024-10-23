@@ -33,6 +33,17 @@ class NavigationDrawerMenu extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.catching_pokemon, color: Colors.black), // Icono de Pokémon
+            title: const Text(
+              'Pokémon',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              context.go('/pokemon'); // Navega a la lista de Pokémon
+              Navigator.of(context).pop();
+            },
+          ),
         ],
       ),
     );

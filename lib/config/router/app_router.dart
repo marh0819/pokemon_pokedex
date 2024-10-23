@@ -1,17 +1,18 @@
 import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart'; // Asegúrate de importar los paquetes necesarios
+// Importa las vistas necesarias
 import 'package:pokemon_pokedex/views/user/user_create_view.dart';
 import 'package:pokemon_pokedex/views/user/user_delete_view.dart';
 import 'package:pokemon_pokedex/views/user/user_list_view.dart';
 import 'package:pokemon_pokedex/views/user/user_edit_view.dart';
-import 'package:pokemon_pokedex/views/login/LoginView.dart'; // Importa la vista de Login
+import 'package:pokemon_pokedex/views/login/LoginView.dart';
+import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart'; // Importa la vista de listar Pokémon
 
 final router = GoRouter(
   routes: [
     // Ruta para el login (ruta inicial)
     GoRoute(
       path: '/',
-      builder: (context, state) => LoginView(), // Aquí está la vista de Login
+      builder: (context, state) => LoginView(),
     ),
     // Ruta para listar usuarios
     GoRoute(
@@ -36,9 +37,13 @@ final router = GoRouter(
       path: '/usuarios/delete/:id',
       builder: (context, state) {
         final userId = state.params['id']!;
-        return UserDelete(
-            userId: int.parse(userId)); // Cambia idusuario a userId
+        return UserDelete(userId: int.parse(userId));
       },
+    ),
+    // Nueva ruta para listar Pokémon
+    GoRoute(
+      path: '/pokemon',
+      builder: (context, state) => const PokemonList(), // Vista para listar Pokémon
     ),
   ],
 );

@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'CRUD de Categorías',
+      title: 'Pokedex',
       theme: AppTheme.lightTheme, // Aplicamos el tema claro
       darkTheme: AppTheme.darkTheme, // Aplicamos el tema oscuro (opcional)
       themeMode: ThemeMode.system, // El tema se adapta al modo del sistema

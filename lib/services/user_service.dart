@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pokemon_pokedex/models/user.dart';
 import 'package:pokemon_pokedex/views/login/LoginDTO.dart'; // Asegúrate de importar correctamente el archivo user.dart
 
