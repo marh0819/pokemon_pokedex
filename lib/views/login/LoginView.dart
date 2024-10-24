@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pokemon_pokedex/services/user_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -13,12 +14,16 @@ class _LoginViewState extends State<LoginView> {
   final UserService _userService = UserService();
   final _emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
 
+  Future<void> _saveFirstName(String firstName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('firstName', firstName); // Guardar el nombre
+  }
+
   // Función para realizar el login
   Future<void> _login() async {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
-    // Validar formato del correo
     if (!RegExp(_emailPattern).hasMatch(email)) {
       _showSnackBar('Formato de correo incorrecto');
       return;
@@ -26,13 +31,14 @@ class _LoginViewState extends State<LoginView> {
 
     try {
       // Intentar hacer login con el servicio
-      String? jwt = await _userService.login(email, password);
+      Map<String, String>? loginResponse =
+          await _userService.login(email, password);
 
-      if (jwt != null) {
-        // Si el login es exitoso, navegar a la página principal
+      if (loginResponse != null) {
+        await _saveFirstName(
+            loginResponse['firstName']!); // Guardar nombre en SharedPreferences
         context.go('/usuarios');
       } else {
-        // Si las credenciales son incorrectas
         _showSnackBar('Correo o Password incorrecta');
       }
     } catch (e) {

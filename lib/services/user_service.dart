@@ -7,7 +7,8 @@ class UserService {
   final String apiUrl = "http://192.168.18.26:8080";
 
   // Método para realizar el login
-  Future<String?> login(String email, String password) async {
+  // Método para realizar el login
+  Future<Map<String, String>?> login(String email, String password) async {
     final loginDTO = LoginDTO(email: email, password: password);
 
     final response = await http.post(
@@ -17,12 +18,15 @@ class UserService {
     );
 
     if (response.statusCode == 202) {
-      // La respuesta incluye el JWT
+      // La respuesta incluye el JWT y el nombre del usuario
       final Map<String, dynamic> responseBody = json.decode(response.body);
-      return responseBody['jwt']; // Devuelve el token JWT si es exitoso
+      return {
+        'jwt': responseBody['jwt'], // Devuelve el token JWT si es exitoso
+        'firstName':
+            responseBody['firstName'], // Devuelve el firstName del usuario
+      };
     } else if (response.statusCode == 401) {
-      // Si las credenciales son incorrectas
-      return null;
+      return null; // Si las credenciales son incorrectas
     } else {
       throw Exception('Error en el login: ${response.statusCode}');
     }

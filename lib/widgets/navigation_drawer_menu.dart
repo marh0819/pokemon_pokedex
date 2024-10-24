@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 
-class NavigationDrawerMenu extends StatelessWidget {
+class NavigationDrawerMenu extends StatefulWidget {
   const NavigationDrawerMenu({super.key});
 
+  @override
+  _NavigationDrawerMenuState createState() => _NavigationDrawerMenuState();
+}
+
+class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
+  String _firstName = 'Invitado'; // Valor por defecto
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFirstName(); // Cargar el nombre del usuario cuando se inicializa el widget
+  }
+
+  // Método para cargar el nombre del usuario desde SharedPreferences
+  Future<void> _loadFirstName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // Si existe el valor en SharedPreferences, lo usamos, de lo contrario usamos "Invitado"
+      _firstName = prefs.getString('firstName') ?? 'Invitado';
+    });
+  }
+
+  // Método para confirmar el cierre de sesión
   void _confirmLogout(BuildContext context) {
     showDialog(
       context: context,
@@ -21,8 +45,7 @@ class NavigationDrawerMenu extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Cierra el diálogo
-                context.go('/'); // Redirige a la página de Login (ruta '/')
-                Navigator.of(context).pop(); // Cierra el Drawer
+                _logout(context); // Llama a la función de logout
               },
               child: const Text('Logout'),
             ),
@@ -32,19 +55,27 @@ class NavigationDrawerMenu extends StatelessWidget {
     );
   }
 
+  // Método para hacer logout
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(
+        'firstName'); // Elimina el nombre del usuario de SharedPreferences
+    context.go('/'); // Redirige a la página de Login (ruta '/')
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Text(
-              'Menú de Navegación',
-              style: TextStyle(
+              'Bienvenido, $_firstName', // Muestra el nombre del usuario
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
               ),
@@ -57,8 +88,8 @@ class NavigationDrawerMenu extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             onTap: () {
-              context.go('/usuarios');
-              Navigator.of(context).pop();
+              context.go('/usuarios'); // Navega a la vista de usuarios
+              Navigator.of(context).pop(); // Cierra el Drawer
             },
           ),
           ListTile(
@@ -68,8 +99,8 @@ class NavigationDrawerMenu extends StatelessWidget {
               style: TextStyle(color: Colors.black),
             ),
             onTap: () {
-              context.go('/pokemon');
-              Navigator.of(context).pop();
+              context.go('/pokemon'); // Navega a la vista de Pokémon
+              Navigator.of(context).pop(); // Cierra el Drawer
             },
           ),
           const Divider(), // Línea divisoria

@@ -49,7 +49,7 @@ class _PokemonListState extends State<PokemonList> {
       appBar: AppBar(
         title: const Text('Lista de Pokémon (3ra Generación)'),
       ),
-      drawer: const NavigationDrawerMenu(), // Incluye el NavigationDrawerMenu
+      drawer: NavigationDrawerMenu(), // Incluye el NavigationDrawerMenu
       body: FutureBuilder<List<Pokemon>>(
         future: _futurePokemons,
         builder: (context, snapshot) {
