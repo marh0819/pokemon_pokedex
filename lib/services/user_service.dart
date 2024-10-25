@@ -4,7 +4,7 @@ import 'package:pokemon_pokedex/models/user.dart';
 import 'package:pokemon_pokedex/views/login/LoginDTO.dart'; // Asegúrate de importar correctamente el archivo user.dart
 
 class UserService {
-  final String apiUrl = "http://192.168.18.26:8080";
+  final String apiUrl = "http://192.168.56.1:8080";
 
   // Método para realizar el login
   // Método para realizar el login

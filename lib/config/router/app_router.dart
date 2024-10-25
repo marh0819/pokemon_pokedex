@@ -40,7 +40,7 @@ final router = GoRouter(
         return UserDelete(userId: int.parse(userId));
       },
     ),
-    // Nueva ruta para listar Pokémon
+    // Ruta para listar Pokémon
     GoRoute(
       path: '/pokemon',
       builder: (context, state) =>

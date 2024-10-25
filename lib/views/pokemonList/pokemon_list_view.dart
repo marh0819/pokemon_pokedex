@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pokemon_pokedex/services/pokemon_service.dart';
 import 'package:pokemon_pokedex/models/pokemon.dart';
+import 'package:pokemon_pokedex/services/pokemon_service.dart';
+import 'package:pokemon_pokedex/views/pokemonList/pokemon_detail_view.dart';
 import 'package:pokemon_pokedex/widgets/navigation_drawer_menu.dart'; // Importa el NavigationDrawerMenu
 
 class PokemonList extends StatefulWidget {
-  const PokemonList({super.key});
+  const PokemonList({Key? key}) : super(key: key);
 
   @override
   State<PokemonList> createState() => _PokemonListState();
@@ -67,6 +68,15 @@ class _PokemonListState extends State<PokemonList> {
                         title:
                             Text('#${pokemon.pokedexNumber} ${pokemon.name}'),
                         subtitle: Text('Tipo: ${pokemon.types.join(', ')}'),
+                        onTap: () {
+                          // Navega a la vista de detalles al hacer clic en el Pokémon
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PokemonDetailView(pokemon: pokemon),
+                            ),
+                          );
+                        },
                       );
                     },
                   ),
