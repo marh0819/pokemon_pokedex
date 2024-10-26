@@ -19,6 +19,21 @@ class _LoginViewState extends State<LoginView> {
     await prefs.setString('firstName', firstName); // Guardar el nombre
   }
 
+  Future<void> _saveLastName(String lastName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('lastName', lastName);
+  }
+
+  Future<void> _saveEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+  }
+
+  Future<void> _saveId(int id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('id', id);
+  }
+
   // Función para realizar el login
   Future<void> _login() async {
     final String email = _emailController.text;
@@ -37,7 +52,14 @@ class _LoginViewState extends State<LoginView> {
       if (loginResponse != null) {
         await _saveFirstName(
             loginResponse['firstName']!); // Guardar nombre en SharedPreferences
-        context.go('/usuarios');
+        await _saveLastName(
+            loginResponse['lastName']!); //Guardar apellido en SharedPreferences
+        await _saveEmail(
+            loginResponse['email']!); //Guardar apellido en SharedPreferences
+        await _saveId(
+            int.parse(loginResponse['id']!)); //Guardar apellido en SharedPreferences
+        
+        context.go('/pokemon');
       } else {
         _showSnackBar('Correo o Password incorrecta');
       }

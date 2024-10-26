@@ -1,11 +1,12 @@
 import 'package:go_router/go_router.dart';
 // Importa las vistas necesarias
-import 'package:pokemon_pokedex/views/user/user_create_view.dart';
-import 'package:pokemon_pokedex/views/user/user_delete_view.dart';
-import 'package:pokemon_pokedex/views/user/user_list_view.dart';
-import 'package:pokemon_pokedex/views/user/user_edit_view.dart';
 import 'package:pokemon_pokedex/views/login/LoginView.dart';
-import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart'; // Importa la vista de listar Pokémon
+import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart';
+import 'package:pokemon_pokedex/views/userGlobal/user_create_view.dart';
+import 'package:pokemon_pokedex/views/userGlobal/user_delete_view.dart';
+import 'package:pokemon_pokedex/views/userGlobal/user_edit_view.dart';
+import 'package:pokemon_pokedex/views/userGlobal/user_list_view.dart';
+import 'package:pokemon_pokedex/views/userPersonal/user_profile_view.dart'; // Importa la vista de listar Pokémon
 
 final router = GoRouter(
   routes: [
@@ -45,6 +46,10 @@ final router = GoRouter(
       path: '/pokemon',
       builder: (context, state) =>
           const PokemonList(), // Vista para listar Pokémon
+    ),
+    GoRoute(
+      path: '/perfil',
+      builder: (context, state) => const UserProfileView(),
     ),
   ],
 );

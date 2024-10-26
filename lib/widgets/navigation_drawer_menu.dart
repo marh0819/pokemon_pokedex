@@ -103,6 +103,14 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
               Navigator.of(context).pop(); // Cierra el Drawer
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.account_circle, color: Colors.black),
+            title: const Text('Perfil', style: TextStyle(color: Colors.black)),
+            onTap: () {
+              context.go('/perfil'); // Navega a la vista de perfil de usuario
+              Navigator.of(context).pop(); // Cierra el Drawer
+            },
+          ),
           const Divider(), // Línea divisoria
           ListTile(
             leading:

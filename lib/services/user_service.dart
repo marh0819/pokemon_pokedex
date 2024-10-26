@@ -24,6 +24,12 @@ class UserService {
         'jwt': responseBody['jwt'], // Devuelve el token JWT si es exitoso
         'firstName':
             responseBody['firstName'], // Devuelve el firstName del usuario
+        'lastName':
+            responseBody['lastName'], // Devuelve el lastName del usuario
+        'email':
+            responseBody['email'], // Devuelve el email del usuario
+        'id':
+            responseBody['id'], // Devuelve el id del usuario
       };
     } else if (response.statusCode == 401) {
       return null; // Si las credenciales son incorrectas
