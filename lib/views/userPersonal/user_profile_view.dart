@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pokemon_pokedex/widgets/navigation_drawer_menu.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,7 +11,7 @@ class UserProfileView extends StatefulWidget {
 }
 
 class _UserProfileViewState extends State<UserProfileView> {
-  int? userId;
+  int? id;
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -25,12 +26,37 @@ class _UserProfileViewState extends State<UserProfileView> {
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      userId = prefs.getInt('id');
+      id = prefs.getInt('id');
       firstName = prefs.getString('firstName') ?? '';
       lastName = prefs.getString('lastName') ?? '';
       email = prefs.getString('email') ?? '';
       password = '******';
     });
+  }
+
+  Future<void> _showEditConfirmationDialog() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar Edición'),
+          content: Text('¿Deseas editar la información del usuario?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirm == true && id != null) {
+      context.go('/usuarios/edit/$id');
+    }
   }
 
   @override
@@ -45,11 +71,16 @@ class _UserProfileViewState extends State<UserProfileView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ID: $userId', style: TextStyle(fontSize: 18)),
+            Text('ID: $id', style: TextStyle(fontSize: 18)),
             Text('Nombre: $firstName', style: TextStyle(fontSize: 18)),
             Text('Apellido: $lastName', style: TextStyle(fontSize: 18)),
             Text('Email: $email', style: TextStyle(fontSize: 18)),
             Text('Password: $password', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20), // Espacio entre los textos y el botón
+            ElevatedButton(
+              onPressed: _showEditConfirmationDialog,
+              child: Text('Editar Perfil'),
+            ),
           ],
         ),
       ),

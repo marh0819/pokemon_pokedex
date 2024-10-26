@@ -62,7 +62,7 @@ class _UserEditState extends State<UserEdit> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Usuario actualizado con éxito')),
         );
-        context.go('/usuarios'); // Regresar a la lista de usuarios
+        context.go('/perfil'); // Regresar a la lista de usuarios
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al actualizar el usuario: $e')),
@@ -144,7 +144,13 @@ class _UserEditState extends State<UserEdit> {
                       obscureText: true, // Ocultamos la contraseña
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Por favor, ingresa la contraseña';
+                          return 'Por favor, ingresa una contraseña';
+                        } else if (value.length < 8) {
+                          return 'La contraseña debe tener al menos 8 caracteres';
+                        } else if (!RegExp(
+                                r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$')
+                            .hasMatch(value)) {
+                          return 'La contraseña debe tener entre 8 y 16 caracteres, incluir al menos un número y una letra mayúscula';
                         }
                         return null;
                       },
