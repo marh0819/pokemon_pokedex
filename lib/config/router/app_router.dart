@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 // Importa las vistas necesarias
 import 'package:pokemon_pokedex/views/login/LoginView.dart';
+import 'package:pokemon_pokedex/views/login/RegisterView.dart';
 import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart';
 import 'package:pokemon_pokedex/views/userGlobal/user_create_view.dart';
 import 'package:pokemon_pokedex/views/userGlobal/user_delete_view.dart';
@@ -50,6 +51,10 @@ final router = GoRouter(
     GoRoute(
       path: '/perfil',
       builder: (context, state) => const UserProfileView(),
+    ),
+    GoRoute(
+      path: '/createUser',
+      builder: (context, state) => const UserRegister(), // Pasa el ID del equipo aquí
     ),
   ],
 );

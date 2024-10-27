@@ -55,9 +55,9 @@ class _LoginViewState extends State<LoginView> {
         await _saveLastName(
             loginResponse['lastName']!); //Guardar apellido en SharedPreferences
         await _saveEmail(
-            loginResponse['email']!); //Guardar apellido en SharedPreferences
+            loginResponse['email']!); //Guardar email en SharedPreferences
         await _saveId(
-            int.parse(loginResponse['id']!)); //Guardar apellido en SharedPreferences
+            int.parse(loginResponse['id']!)); //Guardar ID en SharedPreferences
         
         context.go('/pokemon');
       } else {
@@ -90,18 +90,25 @@ class _LoginViewState extends State<LoginView> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: 'Correo Electrónico'),
               keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Login'),
+              child: Text('Iniciar Sesión'),
+            ),
+            SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                context.go('/createUser');
+              },
+              child: Text('¿No tienes cuenta? Regístrate aquí'),
             ),
           ],
         ),

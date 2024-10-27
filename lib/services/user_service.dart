@@ -26,10 +26,8 @@ class UserService {
             responseBody['firstName'], // Devuelve el firstName del usuario
         'lastName':
             responseBody['lastName'], // Devuelve el lastName del usuario
-        'email':
-            responseBody['email'], // Devuelve el email del usuario
-        'id':
-            responseBody['id'], // Devuelve el id del usuario
+        'email': responseBody['email'], // Devuelve el email del usuario
+        'id': responseBody['id'], // Devuelve el id del usuario
       };
     } else if (response.statusCode == 401) {
       return null; // Si las credenciales son incorrectas
@@ -49,9 +47,10 @@ class UserService {
     }
   }
 
-  // Crear un nuevo usuario
+  // Crear un nuevo usuario y su equipo Pokémon
   Future<void> createUser(
       String firstName, String lastName, String email, String password) async {
+    // Primer request para crear el usuario
     final response = await http.post(
       Uri.parse('$apiUrl/auth/register'),
       body: jsonEncode({
@@ -62,7 +61,22 @@ class UserService {
       }),
       headers: {'Content-Type': 'application/json'},
     );
-    if (response.statusCode != 200 && response.statusCode != 201) {
+
+    // Si la creación del usuario fue exitosa, crear el equipo Pokémon
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final userData = json.decode(response.body);
+      final userId = userData['id'];
+
+      // Segunda petición para crear el equipo de Pokémon usando el userId
+      final teamResponse = await http.post(
+        Uri.parse('$apiUrl/teams/create/$userId'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (teamResponse.statusCode != 200 && teamResponse.statusCode != 201) {
+        throw Exception('Error al crear el equipo Pokémon');
+      }
+    } else {
       throw Exception('Error al crear el usuario');
     }
   }

@@ -22,7 +22,6 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
   Future<void> _loadFirstName() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      // Si existe el valor en SharedPreferences, lo usamos, de lo contrario usamos "Invitado"
       _firstName = prefs.getString('firstName') ?? 'Invitado';
     });
   }
