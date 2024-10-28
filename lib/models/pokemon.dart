@@ -142,4 +142,18 @@ class Pokemon {
       throw Exception('Error al cargar la descripción de la Pokédex');
     }
   }
+
+  // Método fromJson para convertir JSON en una instancia de Pokemon
+  factory Pokemon.fromJson(Map<String, dynamic> json) {
+    return Pokemon(
+      pokedexNumber: json['pokedexNumber'] ?? 0,
+      name: json['name'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      types: List<String>.from(json['types'] ?? []),
+      abilities: Map<String, String>.from(json['abilities'] ?? {}),
+      description: json['description'] ?? '',
+      weaknesses: List<String>.from(json['weaknesses'] ?? []),
+      resistances: List<String>.from(json['resistances'] ?? []),
+    );
+  }
 }

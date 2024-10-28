@@ -88,4 +88,28 @@ class PokemonService {
       throw Exception('Error al cargar la descripción de la habilidad');
     }
   }
+
+  Future<List<Pokemon>> getPokemonDetails(List<int> pokedexNumbers) async {
+    List<Pokemon> pokemons = [];
+
+    for (var pokedexNumber in pokedexNumbers) {
+      final response =
+          await http.get(Uri.parse('$_baseUrl/pokemon/$pokedexNumber'));
+
+      if (response.statusCode == 200) {
+        final detailData = jsonDecode(response.body);
+        final pokemon = await Pokemon.fromJsonWithDetails(detailData);
+        pokemons.add(pokemon);
+
+        print(
+            "Detalles del Pokémon ${pokemon.name} obtenidos correctamente"); // Imprime detalles
+      } else {
+        print(
+            'Error al obtener detalles del Pokémon con Pokedex #$pokedexNumber');
+        throw Exception(
+            'Error al obtener detalles del Pokémon con Pokedex #$pokedexNumber');
+      }
+    }
+    return pokemons;
+  }
 }

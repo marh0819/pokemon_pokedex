@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:pokemon_pokedex/models/user.dart';
-import 'package:pokemon_pokedex/views/login/LoginDTO.dart'; // Asegúrate de importar correctamente el archivo user.dart
+import 'package:pokemon_pokedex/models/pokemon.dart';
+import 'package:pokemon_pokedex/views/login/LoginDTO.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   final String apiUrl = "http://192.168.56.1:8080";
 
-  // Método para realizar el login
   // Método para realizar el login
   Future<Map<String, String>?> login(String email, String password) async {
     final loginDTO = LoginDTO(email: email, password: password);
@@ -21,22 +22,20 @@ class UserService {
       // La respuesta incluye el JWT y el nombre del usuario
       final Map<String, dynamic> responseBody = json.decode(response.body);
       return {
-        'jwt': responseBody['jwt'], // Devuelve el token JWT si es exitoso
-        'firstName':
-            responseBody['firstName'], // Devuelve el firstName del usuario
-        'lastName':
-            responseBody['lastName'], // Devuelve el lastName del usuario
-        'email': responseBody['email'], // Devuelve el email del usuario
-        'id': responseBody['id'], // Devuelve el id del usuario
+        'jwt': responseBody['jwt'],
+        'firstName': responseBody['firstName'],
+        'lastName': responseBody['lastName'],
+        'email': responseBody['email'],
+        'id': responseBody['id'],
       };
     } else if (response.statusCode == 401) {
-      return null; // Si las credenciales son incorrectas
+      return null; // Credenciales incorrectas
     } else {
       throw Exception('Error en el login: ${response.statusCode}');
     }
   }
 
-  // Obtener la lista de usuarios
+  // Método para obtener todos los usuarios
   Future<List<User>> getUsers() async {
     final response = await http.get(Uri.parse('$apiUrl/user/all'));
     if (response.statusCode == 200) {
@@ -50,7 +49,6 @@ class UserService {
   // Crear un nuevo usuario y su equipo Pokémon
   Future<void> createUser(
       String firstName, String lastName, String email, String password) async {
-    // Primer request para crear el usuario
     final response = await http.post(
       Uri.parse('$apiUrl/auth/register'),
       body: jsonEncode({
@@ -62,7 +60,6 @@ class UserService {
       headers: {'Content-Type': 'application/json'},
     );
 
-    // Si la creación del usuario fue exitosa, crear el equipo Pokémon
     if (response.statusCode == 200 || response.statusCode == 201) {
       final userData = json.decode(response.body);
       final userId = userData['id'];
@@ -81,28 +78,6 @@ class UserService {
     }
   }
 
-  // Actualizar un usuario existente
-  Future<void> updateUser(int userId, String firstName, String lastName,
-      String email, String password) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/user/$userId'),
-      body: jsonEncode({
-        'firstName': firstName,
-        'lastName': lastName,
-        'email': email,
-        'password':
-            password, // Asegúrate de incluir la contraseña si la API lo requiere
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    // Manejo de errores
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      throw Exception(
-          'Error al actualizar el usuario: ${response.statusCode} - ${response.body}');
-    }
-  }
-
   // Obtener un usuario por su ID
   Future<User> getUserById(int userId) async {
     final response = await http.get(Uri.parse('$apiUrl/user/$userId'));
@@ -114,12 +89,85 @@ class UserService {
     }
   }
 
+  // Actualizar un usuario existente
+  Future<void> updateUser(int userId, String firstName, String lastName,
+      String email, String password) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/user/$userId'),
+      body: jsonEncode({
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'password': password,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception(
+          'Error al actualizar el usuario: ${response.statusCode} - ${response.body}');
+    }
+  }
+
   // Eliminar un usuario por ID
   Future<void> deleteUser(int userId) async {
     final response = await http.delete(Uri.parse('$apiUrl/user/$userId'));
     if (response.statusCode != 204) {
-      //throw Exception('Error al eliminar el usuario');
-      throw Exception('url: $apiUrl/user/$userId');
+      throw Exception('Error al eliminar el usuario');
+    }
+  }
+
+  // Obtener el equipo del usuario
+  Future<List<Pokemon>> getTeam(int teamId) async {
+    final response = await http.get(Uri.parse('$apiUrl/teams/$teamId'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List pokemons = data['pokemons'];
+      return pokemons.map((json) => Pokemon.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al obtener el equipo');
+    }
+  }
+
+  // Añadir un Pokémon al equipo
+  Future<void> addPokemonToTeam(int pokedexNumber, String name) async {
+    // Llamar a _getTeamId con el userId
+    final teamId = await _getTeamId();
+    if (teamId == null) throw Exception('No se encontró el equipo del usuario');
+
+    final response = await http.post(
+      Uri.parse('$apiUrl/teams/$teamId/addPokemon'),
+      body: jsonEncode({'pokedexNumber': pokedexNumber, 'name': name}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al añadir Pokémon al equipo');
+    }
+  }
+
+  // Método auxiliar para obtener el teamId del usuario actual
+  Future<int?> _getTeamId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id'); // Recupera el userId almacenado
+  }
+
+  Future<List<int>> getTeamPokemonIds(int teamId) async {
+    final response = await http.get(Uri.parse('$apiUrl/teams/$teamId'));
+
+    if (response.statusCode == 200) {
+      final teamData = jsonDecode(response.body);
+      final List<int> pokemonIds = (teamData['pokemons'] as List)
+          .map<int>(
+              (pokemon) => pokemon['pokedexNumber'] as int) // Especifica `int`
+          .toList();
+
+      print(
+          "Pokémon IDs obtenidos para el equipo $teamId: $pokemonIds"); // Imprime los IDs
+
+      return pokemonIds;
+    } else {
+      throw Exception('Error al cargar el equipo');
     }
   }
 }

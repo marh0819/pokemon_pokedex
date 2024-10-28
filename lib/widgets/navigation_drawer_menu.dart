@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawerMenu extends StatefulWidget {
   const NavigationDrawerMenu({super.key});
@@ -99,6 +99,28 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
             ),
             onTap: () {
               context.go('/pokemon'); // Navega a la vista de Pokémon
+              Navigator.of(context).pop(); // Cierra el Drawer
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.group, color: Colors.black),
+            title: const Text(
+              'Mi Equipo',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              final teamId = prefs.getInt('id'); // Retrieve the teamId
+
+              if (teamId != null) {
+                context.go('/team/$teamId'); // Pass the teamId to the route
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content:
+                          Text('No se ha encontrado el equipo del usuario')),
+                );
+              }
               Navigator.of(context).pop(); // Cierra el Drawer
             },
           ),
