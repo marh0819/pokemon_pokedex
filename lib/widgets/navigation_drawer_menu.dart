@@ -125,6 +125,15 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.quiz, color: Colors.black),
+            title: const Text('Trivia', style: TextStyle(color: Colors.black)),
+            onTap: () {
+              context.go('/trivia');
+              Navigator.of(context).pop();
+            },
+          ),
+
+          ListTile(
             leading: const Icon(Icons.account_circle, color: Colors.black),
             title: const Text('Perfil', style: TextStyle(color: Colors.black)),
             onTap: () {

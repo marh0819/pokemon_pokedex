@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:pokemon_pokedex/models/trivia_question.dart';
 import 'package:pokemon_pokedex/models/user.dart';
 import 'package:pokemon_pokedex/models/pokemon.dart';
 import 'package:pokemon_pokedex/views/login/LoginDTO.dart';
@@ -168,6 +169,31 @@ class UserService {
       return pokemonIds;
     } else {
       throw Exception('Error al cargar el equipo');
+    }
+  }
+
+  // Obtener preguntas de trivia
+  Future<List<TriviaQuestion>> fetchTriviaQuestions() async {
+    final response = await http.get(Uri.parse('$apiUrl/trivia/questions'));
+
+    if (response.statusCode == 200) {
+      final List questionsJson = json.decode(utf8.decode(response.bodyBytes));
+      return questionsJson
+          .map((json) => TriviaQuestion.fromJson(json))
+          .toList();
+    } else {
+      throw Exception('Error al cargar preguntas de trivia');
+    }
+  }
+
+// Enviar puntaje de trivia del usuario
+  Future<void> submitTriviaScore(int userId, int score) async {
+    final response = await http.post(
+      Uri.parse('$apiUrl/trivia/submit-score/$userId?score=$score'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al enviar puntaje de trivia');
     }
   }
 }

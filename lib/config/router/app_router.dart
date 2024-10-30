@@ -4,6 +4,7 @@ import 'package:pokemon_pokedex/views/login/LoginView.dart';
 import 'package:pokemon_pokedex/views/login/RegisterView.dart';
 import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart';
 import 'package:pokemon_pokedex/views/teamView/teamView.dart';
+import 'package:pokemon_pokedex/views/trivia/trivia_view.dart';
 import 'package:pokemon_pokedex/views/userGlobal/user_create_view.dart';
 import 'package:pokemon_pokedex/views/userGlobal/user_delete_view.dart';
 import 'package:pokemon_pokedex/views/userGlobal/user_edit_view.dart';
@@ -55,14 +56,20 @@ final router = GoRouter(
     ),
     GoRoute(
       path: '/createUser',
-      builder: (context, state) => const UserRegister(), // Pasa el ID del equipo aquí
+      builder: (context, state) =>
+          const UserRegister(), // Pasa el ID del equipo aquí
     ),
     GoRoute(
       path: '/team/:teamId', // Include teamId as a route parameter
       builder: (context, state) {
-        final teamId = int.parse(state.params['teamId']!); // Parse teamId from route
+        final teamId =
+            int.parse(state.params['teamId']!); // Parse teamId from route
         return TeamView(teamId: teamId);
       },
+    ),
+    GoRoute(
+      path: '/trivia',
+      builder: (context, state) => const TriviaView(),
     ),
   ],
 );
