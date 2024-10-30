@@ -185,15 +185,4 @@ class UserService {
       throw Exception('Error al cargar preguntas de trivia');
     }
   }
-
-// Enviar puntaje de trivia del usuario
-  Future<void> submitTriviaScore(int userId, int score) async {
-    final response = await http.post(
-      Uri.parse('$apiUrl/trivia/submit-score/$userId?score=$score'),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Error al enviar puntaje de trivia');
-    }
-  }
 }

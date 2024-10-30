@@ -16,6 +16,7 @@ class _TriviaViewState extends State<TriviaView> {
   final UserService _userService = UserService();
   List<TriviaQuestion> _questions = [];
   Map<int, String> _answers = {};
+  bool _hasSubmitted = false;
   int _score = 0;
 
   @override
@@ -36,32 +37,57 @@ class _TriviaViewState extends State<TriviaView> {
   }
 
   void _submitAnswers() async {
-    // Calcula el puntaje
-    _score = 0;
-    for (int i = 0; i < _questions.length; i++) {
-      if (_answers[i] == _questions[i].correctAnswer) _score++;
+    try {
+      _score = 0;
+      for (int i = 0; i < _questions.length; i++) {
+        if (_answers[i] == _questions[i].correctAnswer) _score++;
+      }
+
+      setState(() {
+        _hasSubmitted = true;
+      });
+
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Trivia Finalizada'),
+          content: Text('Tu puntaje es $_score/${_questions.length}'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Aceptar'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      print("Error al enviar puntaje: $e");
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Error'),
+          content: Text(
+              'Ocurrió un error al enviar el puntaje. Intenta nuevamente.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        ),
+      );
     }
+  }
 
-    // Enviar el puntaje del usuario (supongamos que el userId es 1)
-    await _userService.submitTriviaScore(1, _score);
-
-    // Muestra el resultado y resetea el cuestionario
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Trivia Finalizada'),
-        content: Text('Tu puntaje es $_score/${_questions.length}'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _loadQuestions();
-            },
-            child: const Text('Aceptar'),
-          ),
-        ],
-      ),
-    );
+  void _resetTrivia() {
+    setState(() {
+      _hasSubmitted = false;
+      _answers.clear();
+      _score = 0;
+      _loadQuestions();
+    });
   }
 
   @override
@@ -70,7 +96,7 @@ class _TriviaViewState extends State<TriviaView> {
       appBar: AppBar(
         title: const Text('Trivia Pokémon'),
       ),
-      drawer: NavigationDrawerMenu(), // Incluye el NavigationDrawerMenu
+      drawer: NavigationDrawerMenu(),
       body: _questions.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -88,24 +114,52 @@ class _TriviaViewState extends State<TriviaView> {
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
-                      ...question.options.map((option) => RadioListTile(
+                      ...question.options.map((option) {
+                        Color optionColor = Colors.white;
+                        if (_hasSubmitted) {
+                          if (option == question.correctAnswer) {
+                            optionColor = Colors.green.shade100;
+                          } else if (_answers[index] == option) {
+                            optionColor = Colors.red.shade100;
+                          }
+                        }
+
+                        return Container(
+                          color: optionColor,
+                          child: RadioListTile(
                             title: Text(option),
                             value: option,
                             groupValue: _answers[index],
-                            onChanged: (value) {
-                              setState(() {
-                                _answers[index] = value!;
-                              });
-                            },
-                          )),
+                            onChanged: _hasSubmitted
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      _answers[index] = value as String;
+                                    });
+                                  },
+                          ),
+                        );
+                      }).toList(),
                     ],
                   ),
                 );
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _submitAnswers,
-        child: const Icon(Icons.check),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: _hasSubmitted ? null : _submitAnswers,
+            child: const Icon(Icons.check),
+            tooltip: 'Enviar Respuestas',
+          ),
+          const SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _resetTrivia,
+            child: const Icon(Icons.refresh),
+            tooltip: 'Reiniciar Trivia',
+          ),
+        ],
       ),
     );
   }
