@@ -104,7 +104,13 @@ class UserService {
       headers: {'Content-Type': 'application/json'},
     );
 
-    if (response.statusCode != 200 && response.statusCode != 201) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Actualiza SharedPreferences con los nuevos datos
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('firstName', firstName);
+      await prefs.setString('lastName', lastName);
+      await prefs.setString('email', email);
+    } else {
       throw Exception(
           'Error al actualizar el usuario: ${response.statusCode} - ${response.body}');
     }

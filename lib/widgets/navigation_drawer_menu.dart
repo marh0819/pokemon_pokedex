@@ -18,6 +18,12 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
     _loadFirstName(); // Cargar el nombre del usuario cuando se inicializa el widget
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadFirstName(); // Recarga el nombre cuando cambia el contexto
+  }
+
   // Método para cargar el nombre del usuario desde SharedPreferences
   Future<void> _loadFirstName() async {
     final prefs = await SharedPreferences.getInstance();
@@ -110,10 +116,10 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
             ),
             onTap: () async {
               final prefs = await SharedPreferences.getInstance();
-              final teamId = prefs.getInt('id'); // Retrieve the teamId
+              final teamId = prefs.getInt('id'); // Recupera el teamId
 
               if (teamId != null) {
-                context.go('/team/$teamId'); // Pass the teamId to the route
+                context.go('/team/$teamId'); // Pasa el teamId a la ruta
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -126,7 +132,8 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
           ),
           ListTile(
             leading: const Icon(Icons.map, color: Colors.black),
-            title: const Text('Mapa Hoen', style: TextStyle(color: Colors.black)),
+            title:
+                const Text('Mapa Hoen', style: TextStyle(color: Colors.black)),
             onTap: () {
               context.go('/mapa');
               Navigator.of(context).pop();
@@ -140,7 +147,6 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
               Navigator.of(context).pop();
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.account_circle, color: Colors.black),
             title: const Text('Perfil', style: TextStyle(color: Colors.black)),
