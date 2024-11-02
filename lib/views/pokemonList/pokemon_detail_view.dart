@@ -46,43 +46,51 @@ class PokemonDetailView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(pokemon.name),
+        leading: IconButton( // Botón de regreso
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Vuelve a la vista de la lista de Pokémon
+          },
+        ),
       ),
       drawer: NavigationDrawerMenu(), // Incluye el NavigationDrawerMenu
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(pokemon.imageUrl),
-            Text(
-              '#${pokemon.pokedexNumber} ${pokemon.name}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text('Tipos: ${pokemon.types.join(', ')}'),
-            Text('Resistencias: ${pokemon.resistances.join(', ')}'),
-            Text('Debilidades: ${pokemon.weaknesses.join(', ')}'),
-            Text('Descripción: ${pokemon.description}'),
-            const SizedBox(height: 10),
-            Text(
-              'Habilidades:',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            ...pokemon.abilities.entries.map((entry) => GestureDetector(
-                  onTap: () => _showAbilityDescription(context, entry.key, entry.value),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text(
-                      entry.key,
-                      style: const TextStyle(color: Colors.blue),
+      body: SingleChildScrollView( // Hacer que el contenido sea desplazable
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(pokemon.imageUrl),
+              Text(
+                '#${pokemon.pokedexNumber} ${pokemon.name}',
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              Text('Tipos: ${pokemon.types.join(', ')}'),
+              Text('Resistencias: ${pokemon.resistances.join(', ')}'),
+              Text('Debilidades: ${pokemon.weaknesses.join(', ')}'),
+              Text('Descripción: ${pokemon.description}'),
+              const SizedBox(height: 10),
+              Text(
+                'Habilidades:',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ...pokemon.abilities.entries.map((entry) => GestureDetector(
+                    onTap: () => _showAbilityDescription(context, entry.key, entry.value),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Text(
+                        entry.key,
+                        style: const TextStyle(color: Colors.blue),
+                      ),
                     ),
-                  ),
-                )),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () => _addToTeam(context),
-              child: const Text('Añadir al Equipo'),
-            ),
-          ],
+                  )),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => _addToTeam(context),
+                child: const Text('Añadir al Equipo'),
+              ),
+            ],
+          ),
         ),
       ),
     );
