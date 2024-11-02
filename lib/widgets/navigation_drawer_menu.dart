@@ -109,6 +109,16 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.compare, color: Colors.black),
+            title:
+                const Text('Comparador', style: TextStyle(color: Colors.black)),
+            onTap: () {
+              context.go('/comparador');
+              Navigator.of(context).pop();
+            },
+          ),
+
+          ListTile(
             leading: const Icon(Icons.group, color: Colors.black),
             title: const Text(
               'Mi Equipo',

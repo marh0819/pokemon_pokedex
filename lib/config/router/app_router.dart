@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pokemon_pokedex/views/login/LoginView.dart';
 import 'package:pokemon_pokedex/views/login/RegisterView.dart';
 import 'package:pokemon_pokedex/views/mapaHoen/mapa_hoen.dart';
+import 'package:pokemon_pokedex/views/pokemonList/comparator_view.dart';
 import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart';
 import 'package:pokemon_pokedex/views/teamView/teamView.dart';
 import 'package:pokemon_pokedex/views/trivia/trivia_view.dart';
@@ -76,5 +77,10 @@ final router = GoRouter(
       path: '/mapa',
       builder: (context, state) => HoennMapView(),
     ),
+    GoRoute(
+      path: '/comparador',
+      builder: (context, state) => const PokemonComparatorView(),
+    ),
+    
   ],
 );

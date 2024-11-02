@@ -191,4 +191,14 @@ class UserService {
       throw Exception('Error al cargar preguntas de trivia');
     }
   }
+
+  Future<void> removePokemonFromTeam(int teamId, int pokedexNumber) async {
+    final response = await http.delete(
+      Uri.parse('$apiUrl/teams/$teamId/removePokemon/$pokedexNumber'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al eliminar el Pokémon del equipo');
+    }
+  }
 }

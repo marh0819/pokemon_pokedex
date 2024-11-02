@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon_pokedex/models/pokemon.dart';
 import 'package:pokemon_pokedex/services/user_service.dart';
+import 'package:pokemon_pokedex/services/pokemon_comparator_service.dart';
 import 'package:pokemon_pokedex/widgets/navigation_drawer_menu.dart';
 
 class PokemonDetailView extends StatelessWidget {
@@ -8,7 +9,8 @@ class PokemonDetailView extends StatelessWidget {
 
   const PokemonDetailView({Key? key, required this.pokemon}) : super(key: key);
 
-  void _showAbilityDescription(BuildContext context, String ability, String description) {
+  void _showAbilityDescription(
+      BuildContext context, String ability, String description) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -41,20 +43,35 @@ class PokemonDetailView extends StatelessWidget {
     }
   }
 
+  void _addToComparator(BuildContext context, int slot) {
+    final comparatorService = PokemonComparatorService();
+    if (slot == 1) {
+      comparatorService.setPokemon1(pokemon);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pokémon seleccionado como 1')),
+      );
+    } else if (slot == 2) {
+      comparatorService.setPokemon2(pokemon);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pokémon seleccionado como 2')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(pokemon.name),
-        leading: IconButton( // Botón de regreso
+        leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Vuelve a la vista de la lista de Pokémon
+            Navigator.pop(context);
           },
         ),
       ),
-      drawer: NavigationDrawerMenu(), // Incluye el NavigationDrawerMenu
-      body: SingleChildScrollView( // Hacer que el contenido sea desplazable
+      drawer: NavigationDrawerMenu(),
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -63,7 +80,8 @@ class PokemonDetailView extends StatelessWidget {
               Image.network(pokemon.imageUrl),
               Text(
                 '#${pokemon.pokedexNumber} ${pokemon.name}',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text('Tipos: ${pokemon.types.join(', ')}'),
               Text('Resistencias: ${pokemon.resistances.join(', ')}'),
@@ -72,10 +90,12 @@ class PokemonDetailView extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 'Habilidades:',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               ...pokemon.abilities.entries.map((entry) => GestureDetector(
-                    onTap: () => _showAbilityDescription(context, entry.key, entry.value),
+                    onTap: () => _showAbilityDescription(
+                        context, entry.key, entry.value),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Text(
@@ -88,6 +108,16 @@ class PokemonDetailView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () => _addToTeam(context),
                 child: const Text('Añadir al Equipo'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => _addToComparator(context, 1),
+                child: const Text('Seleccionar para Comparar 1'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => _addToComparator(context, 2),
+                child: const Text('Seleccionar para Comparar 2'),
               ),
             ],
           ),
