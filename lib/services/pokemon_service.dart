@@ -8,7 +8,7 @@ class PokemonService {
   Future<List<Pokemon>> getPokemons(
       {required int page, required int limit}) async {
     final offset = (page - 1) * limit;
-    final thirdGenStart = 251;
+    final thirdGenStart = 251; // Índice donde comienza la 3ra generación
     final url =
         '$_baseUrl/pokemon?offset=${thirdGenStart + offset}&limit=$limit';
 
@@ -18,19 +18,25 @@ class PokemonService {
       final data = jsonDecode(response.body);
       final List results = data['results'];
 
-      List<Pokemon> pokemons = [];
-      for (var result in results) {
+      // Crea una lista de futuros para cargar los detalles de los Pokémon en paralelo
+      final futures = results.map((result) async {
         final pokemonDetailResponse = await http.get(Uri.parse(result['url']));
         if (pokemonDetailResponse.statusCode == 200) {
           final detailData = jsonDecode(pokemonDetailResponse.body);
-          final pokemon = await Pokemon.fromJsonWithDetails(
-              detailData); // Usa el nuevo método
+          final pokemon = await Pokemon.fromJsonWithDetails(detailData);
 
+          // Filtra solo los Pokémon de la 3ra generación
           if (pokemon.pokedexNumber >= 252 && pokemon.pokedexNumber <= 386) {
-            pokemons.add(pokemon);
+            return pokemon;
           }
         }
-      }
+        return null; // Si no es de la 3ra generación o hay un error
+      }).toList();
+
+      // Espera a que todos los futuros se completen y filtra los Pokémon no nulos
+      final pokemons =
+          (await Future.wait(futures)).whereType<Pokemon>().toList();
+
       return pokemons;
     } else {
       throw Exception('Error al cargar los Pokémon');
