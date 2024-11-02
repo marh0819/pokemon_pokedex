@@ -164,3 +164,5 @@ class _TriviaViewState extends State<TriviaView> {
     );
   }
 }
+
+

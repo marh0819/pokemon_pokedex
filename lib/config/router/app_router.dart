@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 // Importa las vistas necesarias
 import 'package:pokemon_pokedex/views/login/LoginView.dart';
 import 'package:pokemon_pokedex/views/login/RegisterView.dart';
+import 'package:pokemon_pokedex/views/mapaHoen/mapa_hoen.dart';
 import 'package:pokemon_pokedex/views/pokemonList/pokemon_list_view.dart';
 import 'package:pokemon_pokedex/views/teamView/teamView.dart';
 import 'package:pokemon_pokedex/views/trivia/trivia_view.dart';
@@ -70,6 +71,10 @@ final router = GoRouter(
     GoRoute(
       path: '/trivia',
       builder: (context, state) => const TriviaView(),
+    ),
+    GoRoute(
+      path: '/mapa',
+      builder: (context, state) => HoennMapView(),
     ),
   ],
 );

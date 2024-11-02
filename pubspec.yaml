@@ -21,3 +21,21 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/assets/hoen_map.png
+    - lib/assets/cities/littleroot.png
+    - lib/assets/cities/oldale.png
+    - lib/assets/cities/petalburg.png
+    - lib/assets/cities/rustboro.png
+    - lib/assets/cities/dewford.png
+    - lib/assets/cities/slateport.png
+    - lib/assets/cities/mauville.png
+    - lib/assets/cities/verdanturf.png
+    - lib/assets/cities/fallarbor.png
+    - lib/assets/cities/lavaridge.png
+    - lib/assets/cities/fortree.png
+    - lib/assets/cities/lilycove.png
+    - lib/assets/cities/mossdeep.png
+    - lib/assets/cities/sootopolis.png
+    - lib/assets/cities/pacifidlog.png
+    - lib/assets/cities/ever_grande.png
