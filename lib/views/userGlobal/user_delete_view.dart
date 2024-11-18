@@ -8,11 +8,11 @@ import 'package:pokemon_pokedex/widgets/navigation_drawer_menu.dart';
 class UserDelete extends StatelessWidget {
   final int userId; // ID del usuario a eliminar.
 
-  const UserDelete({Key? key, required this.userId}) : super(key: key);
+  const UserDelete({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
-    final UserService _userService = UserService();
+    final UserService userService = UserService();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Eliminar Usuario')),
@@ -31,11 +31,12 @@ class UserDelete extends StatelessWidget {
               onPressed: () async {
                 try {
                   // Llamamos al método del servicio para eliminar el usuario
-                  await _userService.deleteUser(userId);
+                  await userService.deleteUser(userId);
 
                   // Mostramos un mensaje de éxito.
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Usuario eliminado con éxito')),
+                    const SnackBar(
+                        content: Text('Usuario eliminado con éxito')),
                   );
 
                   // Regresamos a la lista de usuarios.

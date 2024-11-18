@@ -38,21 +38,33 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar Logout'),
-          content: const Text('¿Estás seguro de que quieres cerrar sesión?'),
+          title: const Text(
+            'Confirmar Logout',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+          ),
+          content: const Text(
+            '¿Estás seguro de que quieres cerrar sesión?',
+            style: TextStyle(color: Colors.black87),
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Cierra el diálogo
               },
-              child: const Text('Cancelar'),
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.teal),
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Cierra el diálogo
                 _logout(context); // Llama a la función de logout
               },
-              child: const Text('Logout'),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );
@@ -63,122 +75,145 @@ class _NavigationDrawerMenuState extends State<NavigationDrawerMenu> {
   // Método para hacer logout
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(
-        'firstName'); // Elimina el nombre del usuario de SharedPreferences
+    await prefs.remove('firstName'); // Elimina el nombre del usuario
     context.go('/'); // Redirige a la página de Login (ruta '/')
   }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'Bienvenido, $_firstName', // Muestra el nombre del usuario
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+      child: Container(
+        color: Colors.redAccent.shade700, // Fondo temático rojo
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Colors.redAccent,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 30,
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Bienvenido, $_firstName',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.person, color: Colors.black),
-            title: const Text(
-              'Usuarios',
-              style: TextStyle(color: Colors.black),
+            _buildMenuItem(
+              context,
+              icon: Icons.person,
+              label: 'Usuarios',
+              route: '/usuarios',
             ),
-            onTap: () {
-              context.go('/usuarios'); // Navega a la vista de usuarios
-              Navigator.of(context).pop(); // Cierra el Drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.catching_pokemon, color: Colors.black),
-            title: const Text(
-              'Pokémon',
-              style: TextStyle(color: Colors.black),
+            _buildMenuItem(
+              context,
+              icon: Icons.catching_pokemon,
+              label: 'Pokémon',
+              route: '/pokemon',
             ),
-            onTap: () {
-              context.go('/pokemon'); // Navega a la vista de Pokémon
-              Navigator.of(context).pop(); // Cierra el Drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.compare, color: Colors.black),
-            title:
-                const Text('Comparador', style: TextStyle(color: Colors.black)),
-            onTap: () {
-              context.go('/comparador');
-              Navigator.of(context).pop();
-            },
-          ),
+            _buildMenuItem(
+              context,
+              icon: Icons.compare,
+              label: 'Comparador',
+              route: '/comparador',
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.group,
+              label: 'Mi Equipo',
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                final teamId = prefs.getInt('id'); // Recupera el teamId
 
-          ListTile(
-            leading: const Icon(Icons.group, color: Colors.black),
-            title: const Text(
-              'Mi Equipo',
-              style: TextStyle(color: Colors.black),
+                if (teamId != null) {
+                  context.go('/team/$teamId'); // Pasa el teamId a la ruta
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'No se ha encontrado el equipo del usuario',
+                      ),
+                    ),
+                  );
+                }
+                Navigator.of(context).pop(); // Cierra el Drawer
+              },
             ),
-            onTap: () async {
-              final prefs = await SharedPreferences.getInstance();
-              final teamId = prefs.getInt('id'); // Recupera el teamId
-
-              if (teamId != null) {
-                context.go('/team/$teamId'); // Pasa el teamId a la ruta
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('No se ha encontrado el equipo del usuario')),
-                );
-              }
-              Navigator.of(context).pop(); // Cierra el Drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.map, color: Colors.black),
-            title:
-                const Text('Mapa Hoen', style: TextStyle(color: Colors.black)),
-            onTap: () {
-              context.go('/mapa');
-              Navigator.of(context).pop();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.quiz, color: Colors.black),
-            title: const Text('Trivia', style: TextStyle(color: Colors.black)),
-            onTap: () {
-              context.go('/trivia');
-              Navigator.of(context).pop();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_circle, color: Colors.black),
-            title: const Text('Perfil', style: TextStyle(color: Colors.black)),
-            onTap: () {
-              context.go('/perfil'); // Navega a la vista de perfil de usuario
-              Navigator.of(context).pop(); // Cierra el Drawer
-            },
-          ),
-          const Divider(), // Línea divisoria
-          ListTile(
-            leading:
-                const Icon(Icons.logout, color: Colors.red), // Icono en rojo
-            title: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.red), // Texto en rojo
+            _buildMenuItem(
+              context,
+              icon: Icons.map,
+              label: 'Mapa Hoen',
+              route: '/mapa',
             ),
-            onTap: () {
-              _confirmLogout(context); // Muestra el diálogo de confirmación
-            },
-          ),
-        ],
+            _buildMenuItem(
+              context,
+              icon: Icons.quiz,
+              label: 'Trivia',
+              route: '/trivia',
+            ),
+            _buildMenuItem(
+              context,
+              icon: Icons.account_circle,
+              label: 'Perfil',
+              route: '/perfil',
+            ),
+            const Divider(color: Colors.white70),
+            _buildMenuItem(
+              context,
+              icon: Icons.logout,
+              label: 'Logout',
+              onTap: () => _confirmLogout(context),
+              iconColor: const Color.fromARGB(255, 255, 255, 255),
+              textColor: const Color.fromARGB(255, 255, 255, 255),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildMenuItem(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    String? route,
+    VoidCallback? onTap,
+    Color iconColor = Colors.white,
+    Color textColor = Colors.white,
+  }) {
+    return ListTile(
+      leading: Icon(icon, color: iconColor),
+      title: Text(
+        label,
+        style: TextStyle(
+          color: textColor,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onTap: onTap ??
+          () {
+            if (route != null) {
+              context.go(route); // Navega a la ruta proporcionada
+            }
+            Navigator.of(context).pop(); // Cierra el Drawer
+          },
     );
   }
 }

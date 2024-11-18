@@ -7,7 +7,7 @@ import 'package:pokemon_pokedex/views/login/LoginDTO.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  final String apiUrl = "http://192.168.56.1:8080";
+  final String apiUrl = "http://192.168.1.9:8080";
 
   // Método para realizar el login
   Future<Map<String, String>?> login(String email, String password) async {

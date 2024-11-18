@@ -8,7 +8,7 @@ class PokemonService {
   Future<List<Pokemon>> getPokemons(
       {required int page, required int limit}) async {
     final offset = (page - 1) * limit;
-    final thirdGenStart = 251; // Índice donde comienza la 3ra generación
+    const thirdGenStart = 251; // Índice donde comienza la 3ra generación
     final url =
         '$_baseUrl/pokemon?offset=${thirdGenStart + offset}&limit=$limit';
 

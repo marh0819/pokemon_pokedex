@@ -54,7 +54,7 @@ class AppTheme {
       ),
       // bodyText2 es ahora bodyMedium en las versiones más recientes
       bodyMedium: TextStyle(
-        fontSize: 16.0,
+        fontSize: 126.0,
         color: Colors.black87,
       ),
     ),
