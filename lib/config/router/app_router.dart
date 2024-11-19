@@ -18,7 +18,7 @@ final router = GoRouter(
     // Ruta para el login (ruta inicial)
     GoRoute(
       path: '/',
-      builder: (context, state) => LoginView(),
+      builder: (context, state) => const LoginView(),
     ),
     // Ruta para listar usuarios
     GoRoute(
@@ -81,6 +81,5 @@ final router = GoRouter(
       path: '/comparador',
       builder: (context, state) => const PokemonComparatorView(),
     ),
-    
   ],
 );

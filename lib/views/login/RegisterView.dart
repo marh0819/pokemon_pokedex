@@ -35,33 +35,32 @@ class _UserRegisterState extends State<UserRegister> {
   // Método para manejar la creación del usuario
   // Método para manejar la creación del usuario
   void _createUser() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      await _userService.createUser(
-        _firstNameController.text,
-        _lastNameController.text,
-        _emailController.text,
-        _passwordController.text,
-      );
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _userService.createUser(
+          _firstNameController.text,
+          _lastNameController.text,
+          _emailController.text,
+          _passwordController.text,
+        );
 
-      // Mostrar mensaje de éxito
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuario creado con éxito')),
-      );
+        // Mostrar mensaje de éxito
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario creado con éxito')),
+        );
 
-      // Esperar un segundo antes de navegar
-      await Future.delayed(const Duration(seconds: 1));
+        // Esperar un segundo antes de navegar
+        await Future.delayed(const Duration(seconds: 1));
 
-      // Regresar a la lista de usuarios
-      context.go('/');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al crear el usuario: $e')),
-      );
+        // Regresar a la lista de usuarios
+        context.go('/');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al crear el usuario: $e')),
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {

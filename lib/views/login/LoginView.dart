@@ -4,6 +4,8 @@ import 'package:pokemon_pokedex/services/user_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
+  const LoginView({super.key});
+
   @override
   _LoginViewState createState() => _LoginViewState();
 }
@@ -49,19 +51,29 @@ class _LoginViewState extends State<LoginView> {
       Map<String, String>? loginResponse =
           await _userService.login(email, password);
 
-      if (loginResponse != null) {
-        await _saveFirstName(
-            loginResponse['firstName']!); // Guardar nombre en SharedPreferences
-        await _saveLastName(
-            loginResponse['lastName']!); //Guardar apellido en SharedPreferences
-        await _saveEmail(
-            loginResponse['email']!); //Guardar email en SharedPreferences
-        await _saveId(
-            int.parse(loginResponse['id']!)); //Guardar ID en SharedPreferences
-        
+      // Validar que la respuesta no sea nula y contenga todas las claves necesarias
+      if (loginResponse != null &&
+          loginResponse.containsKey('firstName') &&
+          loginResponse.containsKey('lastName') &&
+          loginResponse.containsKey('email') &&
+          loginResponse.containsKey('id')) {
+        // Guardar datos en SharedPreferences
+        await _saveFirstName(loginResponse['firstName']!);
+        await _saveLastName(loginResponse['lastName']!);
+        await _saveEmail(loginResponse['email']!);
+
+        // Manejar el caso en el que el id no sea un número válido
+        try {
+          await _saveId(int.parse(loginResponse['id']!));
+        } catch (e) {
+          _showSnackBar('ID inválido en la respuesta del servidor.');
+          return;
+        }
+
+        // Navegar a la página de Pokémon
         context.go('/pokemon');
       } else {
-        _showSnackBar('Correo o Password incorrecta');
+        _showSnackBar('Datos de inicio de sesión incompletos.');
       }
     } catch (e) {
       _showSnackBar('Error al iniciar sesión: $e');
@@ -82,7 +94,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -90,25 +102,26 @@ class _LoginViewState extends State<LoginView> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Correo Electrónico'),
+              decoration:
+                  const InputDecoration(labelText: 'Correo Electrónico'),
               keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
+              decoration: const InputDecoration(labelText: 'Contraseña'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Iniciar Sesión'),
+              child: const Text('Iniciar Sesión'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton(
               onPressed: () {
                 context.go('/createUser');
               },
-              child: Text('¿No tienes cuenta? Regístrate aquí'),
+              child: const Text('¿No tienes cuenta? Regístrate aquí'),
             ),
           ],
         ),
