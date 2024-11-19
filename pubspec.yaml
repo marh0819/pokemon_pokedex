@@ -1,0 +1,41 @@
+name: pokemon_pokedex
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  go_router: ^6.0.0
+  http: ^0.13.0
+  shared_preferences: ^2.0.0
+  flutter_dotenv: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/hoen_map.png
+    - lib/assets/cities/littleroot.png
+    - lib/assets/cities/oldale.png
+    - lib/assets/cities/petalburg.png
+    - lib/assets/cities/rustboro.png
+    - lib/assets/cities/dewford.png
+    - lib/assets/cities/slateport.png
+    - lib/assets/cities/mauville.png
+    - lib/assets/cities/verdanturf.png
+    - lib/assets/cities/fallarbor.png
+    - lib/assets/cities/lavaridge.png
+    - lib/assets/cities/fortree.png
+    - lib/assets/cities/lilycove.png
+    - lib/assets/cities/mossdeep.png
+    - lib/assets/cities/sootopolis.png
+    - lib/assets/cities/pacifidlog.png
+    - lib/assets/cities/ever_grande.png
