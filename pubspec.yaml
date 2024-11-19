@@ -23,6 +23,7 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/hoen_map.png
+    - lib/assets/pokeball.png
     - lib/assets/cities/littleroot.png
     - lib/assets/cities/oldale.png
     - lib/assets/cities/petalburg.png
@@ -39,3 +40,4 @@ flutter:
     - lib/assets/cities/sootopolis.png
     - lib/assets/cities/pacifidlog.png
     - lib/assets/cities/ever_grande.png
+    

@@ -154,7 +154,7 @@ class _UserListState extends State<UserList> {
               iconSize: 28,
               color: Colors.redAccent,
               onPressed: () {
-                _showDeleteConfirmation(user, context);
+                _showDeleteConfirmation(user);
               },
             ),
           ],
@@ -163,10 +163,10 @@ class _UserListState extends State<UserList> {
     );
   }
 
-  void _showDeleteConfirmation(User user, BuildContext context) {
+  void _showDeleteConfirmation(User user) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -190,7 +190,7 @@ class _UserListState extends State<UserList> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text(
                 'Cancelar',
@@ -203,8 +203,8 @@ class _UserListState extends State<UserList> {
             ),
             TextButton(
               onPressed: () async {
-                await _deleteUser(user, context);
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop(); // Cierra el diálogo
+                await _deleteUser(user);
               },
               child: const Text(
                 'Eliminar',
@@ -221,31 +221,35 @@ class _UserListState extends State<UserList> {
     );
   }
 
-  Future<void> _deleteUser(User user, BuildContext context) async {
+  Future<void> _deleteUser(User user) async {
     try {
       await _userService.deleteUser(user.id);
       setState(() {
         _futureUsers = _userService.getUsers();
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Usuario eliminado con éxito',
-            style: TextStyle(fontSize: 16, color: Colors.white),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Usuario eliminado con éxito',
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            backgroundColor: Colors.teal,
           ),
-          backgroundColor: Colors.teal,
-        ),
-      );
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Error al eliminar el usuario: $e',
-            style: const TextStyle(fontSize: 16, color: Colors.white),
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error al eliminar el usuario: $e',
+              style: const TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            backgroundColor: Colors.redAccent,
           ),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+        );
+      }
     }
   }
 }

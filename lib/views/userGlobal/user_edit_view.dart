@@ -1,15 +1,11 @@
-// lib/views/users/user_edit_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pokemon_pokedex/models/user.dart'; // Asegúrate de tener este modelo implementado
 import 'package:pokemon_pokedex/services/user_service.dart';
 import 'package:pokemon_pokedex/widgets/navigation_drawer_menu.dart';
 
-/// Vista para editar un usuario existente.
-/// Permite al usuario modificar los datos del usuario seleccionado.
 class UserEdit extends StatefulWidget {
-  final String idusuario; // ID del usuario a editar.
+  final String idusuario;
 
   const UserEdit({super.key, required this.idusuario});
 
@@ -24,13 +20,11 @@ class _UserEditState extends State<UserEdit> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final UserService _userService = UserService();
-  late Future<User> _futureUser; // Futuro que contendrá el usuario a editar
+  late Future<User> _futureUser;
 
   @override
   void initState() {
     super.initState();
-    print('Editing user with ID: ${widget.idusuario}');
-    // Al iniciar, obtenemos los datos del usuario por su ID
     _futureUser = _userService.getUserById(int.parse(widget.idusuario));
   }
 
@@ -43,12 +37,9 @@ class _UserEditState extends State<UserEdit> {
     super.dispose();
   }
 
-  /// Método para manejar la acción de actualizar el usuario.
-  /// Valida el formulario y envía los datos actualizados al servicio.
   void _updateUser() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Llamamos al método del servicio para actualizar el usuario
         await _userService.updateUser(
           int.parse(widget.idusuario),
           _firstNameController.text,
@@ -56,13 +47,10 @@ class _UserEditState extends State<UserEdit> {
           _emailController.text,
           _passwordController.text,
         );
-
-        // Mostramos un mensaje de éxito.
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Usuario actualizado con éxito')),
         );
-        context.go('/perfil'); // Regresar a la lista de usuarios
+        context.go('/perfil');
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al actualizar el usuario: $e')),
@@ -74,30 +62,50 @@ class _UserEditState extends State<UserEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Editar Usuario')),
-      drawer: const NavigationDrawerMenu(), // Usamos el widget personalizado
+      appBar: AppBar(
+        title: const Text(
+          'Editar Usuario',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.redAccent,
+      ),
+      drawer: const NavigationDrawerMenu(),
       body: FutureBuilder<User>(
         future: _futureUser,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final user = snapshot.data!;
-            // Asignamos los valores actuales del usuario a los controladores.
             _firstNameController.text = user.firstName;
             _lastNameController.text = user.lastName;
             _emailController.text = user.email;
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              // Formulario para editar los datos del usuario.
               child: Form(
                 key: _formKey,
-                child: Column(
+                child: ListView(
                   children: [
-                    // Campo de texto para el primer nombre del usuario.
+                    const Center(
+                      child: Text(
+                        'Editar Información del Usuario',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _firstNameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Primer Nombre',
+                        prefixIcon: const Icon(Icons.person),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -106,12 +114,17 @@ class _UserEditState extends State<UserEdit> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 10),
-                    // Campo de texto para el apellido del usuario.
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _lastNameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Apellido',
+                        prefixIcon: const Icon(Icons.person_outline),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -120,12 +133,17 @@ class _UserEditState extends State<UserEdit> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 10),
-                    // Campo de texto para el correo electrónico.
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _emailController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Correo Electrónico',
+                        prefixIcon: const Icon(Icons.email),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -134,14 +152,19 @@ class _UserEditState extends State<UserEdit> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 10),
-                    // Campo de texto para la contraseña.
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _passwordController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Contraseña',
+                        prefixIcon: const Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
-                      obscureText: true, // Ocultamos la contraseña
+                      obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, ingresa una contraseña';
@@ -150,26 +173,40 @@ class _UserEditState extends State<UserEdit> {
                         } else if (!RegExp(
                                 r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$')
                             .hasMatch(value)) {
-                          return 'La contraseña debe tener entre 8 y 16 caracteres, incluir al menos un número y una letra mayúscula';
+                          return 'Debe incluir entre 8 y 16 caracteres, al menos un número y una letra mayúscula';
                         }
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
-                    // Botón para enviar el formulario y actualizar el usuario
-                    ElevatedButton(
-                      onPressed: _updateUser,
-                      child: const Text('Actualizar'),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _updateUser,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          backgroundColor: Colors.redAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Actualizar Usuario',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             );
           } else if (snapshot.hasError) {
-            // En caso de error al obtener los datos, mostramos un mensaje
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          // Mientras se cargan los datos, mostramos un indicador de progreso.
           return const Center(child: CircularProgressIndicator());
         },
       ),

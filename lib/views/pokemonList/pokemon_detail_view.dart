@@ -16,14 +16,33 @@ class PokemonDetailView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Text(
             ability,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-          content: Text(description),
+          content: SingleChildScrollView(
+            child: Text(
+              description,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text("Cerrar"),
+              child: const Text(
+                "Cerrar",
+                style: TextStyle(fontSize: 16),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
