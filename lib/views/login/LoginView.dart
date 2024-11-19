@@ -18,7 +18,7 @@ class _LoginViewState extends State<LoginView> {
 
   Future<void> _saveFirstName(String firstName) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('firstName', firstName); // Guardar el nombre
+    await prefs.setString('firstName', firstName);
   }
 
   Future<void> _saveLastName(String lastName) async {
@@ -36,7 +36,6 @@ class _LoginViewState extends State<LoginView> {
     await prefs.setInt('id', id);
   }
 
-  // Función para realizar el login
   Future<void> _login() async {
     final String email = _emailController.text;
     final String password = _passwordController.text;
@@ -47,22 +46,18 @@ class _LoginViewState extends State<LoginView> {
     }
 
     try {
-      // Intentar hacer login con el servicio
       Map<String, String>? loginResponse =
           await _userService.login(email, password);
 
-      // Validar que la respuesta no sea nula y contenga todas las claves necesarias
       if (loginResponse != null &&
           loginResponse.containsKey('firstName') &&
           loginResponse.containsKey('lastName') &&
           loginResponse.containsKey('email') &&
           loginResponse.containsKey('id')) {
-        // Guardar datos en SharedPreferences
         await _saveFirstName(loginResponse['firstName']!);
         await _saveLastName(loginResponse['lastName']!);
         await _saveEmail(loginResponse['email']!);
 
-        // Manejar el caso en el que el id no sea un número válido
         try {
           await _saveId(int.parse(loginResponse['id']!));
         } catch (e) {
@@ -70,7 +65,6 @@ class _LoginViewState extends State<LoginView> {
           return;
         }
 
-        // Navegar a la página de Pokémon
         context.go('/pokemon');
       } else {
         _showSnackBar('Datos de inicio de sesión incompletos.');
@@ -80,7 +74,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  // Función para mostrar SnackBar
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -94,36 +87,98 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text(
+          'Iniciar Sesión',
+          style: TextStyle(
+            fontFamily: 'PokemonClassic',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.redAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration:
-                  const InputDecoration(labelText: 'Correo Electrónico'),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Iniciar Sesión'),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                context.go('/createUser');
-              },
-              child: const Text('¿No tienes cuenta? Regístrate aquí'),
-            ),
-          ],
+      body: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Bienvenido a la Pokédex',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Correo Electrónico',
+                  prefixIcon: const Icon(Icons.email),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white70,
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  prefixIcon: const Icon(Icons.lock),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white70,
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity, // Botón ocupa todo el ancho
+                child: ElevatedButton(
+                  onPressed: _login,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
+                  ),
+                  child: const Text(
+                    'Iniciar Sesión',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  context.go('/createUser');
+                },
+                child: const Text(
+                  '¿No tienes cuenta? Regístrate aquí',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.redAccent,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

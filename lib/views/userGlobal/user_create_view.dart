@@ -34,53 +34,76 @@ class _UserCreateState extends State<UserCreate> {
   }
 
   // Método para manejar la creación del usuario
-  // Método para manejar la creación del usuario
   void _createUser() async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      await _userService.createUser(
-        _firstNameController.text,
-        _lastNameController.text,
-        _emailController.text,
-        _passwordController.text,
-      );
+    if (_formKey.currentState!.validate()) {
+      try {
+        await _userService.createUser(
+          _firstNameController.text,
+          _lastNameController.text,
+          _emailController.text,
+          _passwordController.text,
+        );
 
-      // Mostrar mensaje de éxito
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuario creado con éxito')),
-      );
+        // Mostrar mensaje de éxito
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario creado con éxito')),
+        );
 
-      // Esperar un segundo antes de navegar
-      await Future.delayed(const Duration(seconds: 1));
+        // Esperar un segundo antes de navegar
+        await Future.delayed(const Duration(seconds: 1));
 
-      // Regresar a la lista de usuarios
-      context.go('/usuarios');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al crear el usuario: $e')),
-      );
+        // Regresar a la lista de usuarios
+        context.go('/usuarios');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al crear el usuario: $e')),
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crear Usuario'),
+        title: const Text(
+          'Crear Usuario',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        backgroundColor: Colors.redAccent,
+        elevation: 4,
       ),
-      drawer: const NavigationDrawerMenu(), // Usamos el widget personalizado
+      drawer: const NavigationDrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
+              const Center(
+                child: Text(
+                  'Registrar Nuevo Usuario',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
               // Campo para el nombre
               TextFormField(
                 controller: _firstNameController,
-                decoration: const InputDecoration(labelText: 'Nombre'),
+                decoration: InputDecoration(
+                  labelText: 'Nombre',
+                  prefixIcon: const Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa el nombre';
@@ -95,7 +118,15 @@ class _UserCreateState extends State<UserCreate> {
               // Campo para el apellido
               TextFormField(
                 controller: _lastNameController,
-                decoration: const InputDecoration(labelText: 'Apellido'),
+                decoration: InputDecoration(
+                  labelText: 'Apellido',
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa el apellido';
@@ -110,13 +141,19 @@ class _UserCreateState extends State<UserCreate> {
               // Campo para el correo
               TextFormField(
                 controller: _emailController,
-                decoration:
-                    const InputDecoration(labelText: 'Correo Electrónico'),
+                decoration: InputDecoration(
+                  labelText: 'Correo Electrónico',
+                  prefixIcon: const Icon(Icons.email),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor, ingresa el correo electrónico';
                   }
-                  // Validación de formato de correo electrónico
                   String pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
                   RegExp regex = RegExp(pattern);
                   if (!regex.hasMatch(value)) {
@@ -130,7 +167,15 @@ class _UserCreateState extends State<UserCreate> {
               // Campo para la contraseña
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Contraseña'),
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  prefixIcon: const Icon(Icons.lock),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -148,9 +193,26 @@ class _UserCreateState extends State<UserCreate> {
               const SizedBox(height: 20),
 
               // Botón para crear el usuario
-              ElevatedButton(
-                onPressed: _createUser,
-                child: const Text('Crear Usuario'),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _createUser,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Crear Usuario',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
